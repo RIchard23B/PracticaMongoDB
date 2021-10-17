@@ -12,19 +12,17 @@ const app = express();
 //Configuracion de CORS
 app.use(cors());
 
+//Lectura y parseo del body
+app.use(express.json());
+
 //Conexion a la BD
 dbConection();
 //console.log(process.env);
 
 
 //Rutas de la Api
-app.get('/', (req, res) =>{
-    res.json({
-        ok:true,
-        msg: 'Bienvenidos a node'
-    });
-});
-
+app.use('/api/usuarios', require('./routes/usuarios.routes'));
+app.use('/api/login', require ('./routes/auth.routes'))
 
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor corriendo en el puerto ' + process.env.PORT)
