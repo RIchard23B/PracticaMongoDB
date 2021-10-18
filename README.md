@@ -1,4 +1,4 @@
-# Administrador de Proyectos - Backend
+# Administrador de Proyectos - Tiendita de Don Richi - Backend
 
 Ejecutar el siguiente codigo para generar las dependencias
 ...

@@ -1,5 +1,6 @@
 
 const express = require('express'); 
+
 require('dotenv').config();
 const {dbConection} = require('./config/database');
 const cors = require('cors');
@@ -22,7 +23,10 @@ dbConection();
 
 //Rutas de la Api
 app.use('/api/usuarios', require('./routes/usuarios.routes'));
-app.use('/api/login', require ('./routes/auth.routes'))
+app.use('/api/login', require ('./routes/auth.routes'));
+app.use('/api/cliente', require('./routes/cliente.routes'));
+app.use('/api/producto', require('./routes/producto.routes'));
+
 
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor corriendo en el puerto ' + process.env.PORT)
