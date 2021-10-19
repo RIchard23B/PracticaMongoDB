@@ -51,21 +51,26 @@ const crearCliente = async(req, res=response)=>{
 
 }
 
-//Leer Cliente por ID
+//Leer Cliente por Nombre y Apellido
 
 const leerCliente = async (req, res=response) => {
-
+    
     const busqueda = req.params.busqueda; 
     const miRegExp = new RegExp(busqueda,'i'); //i  insensible
 
-    const [cliente] = await Promise.all ([
-        Cliente.find({nombre:miRegExp}), // la busqueda es por nombre
+    const [cliente, apellido] = await Promise.all ([
+        Cliente.find({nombre:miRegExp}), 
+        Cliente.find({apellido:miRegExp}),// la busqueda es por nombre
     ]);
+
+    
+    
 
     res.json({
         ok: true,
         msg: 'busqueda Clientes',
-        cliente
+        cliente,
+        apellido,
     });
 }
 
@@ -76,7 +81,7 @@ const actualizarCliente = async (req, res= response) =>{
     try{
         const clienteDB = await Cliente.findById(uid);
         if(!clienteDB){
-            return res.satatus(404).json({
+            return res.status(404).json({
                 ok: false,
                 msg: 'No existe un usuario con ese id'
             });

@@ -1,20 +1,27 @@
-const { response } = require('express');
+const { response, query } = require('express');
 const Producto = require('../models/producto.model');
 
 //Agregar Producto
 const agregarProducto = async(req, res=response)=>{
 
-    try{
+    const uid = req.uid;
+    const xid =req.uid;
+    
 
     //Creamos un obj de la clase model Cliente
-    const producto = new Producto(req.body);
+    const producto = new Producto({
+        categoria: uid,
+        proveedor: xid,
+        ...req.body
+    });
 
+    try{
     //Indicar a monngoose que registre Producto a la BD
-    await producto.save();
+     const produtosDB = await producto.save();
 
     res.json({
         ok: true,
-        msg: 'Nuevo Producto agregado!!!!'
+        proveedor: produtosDB
     });
 
     }catch( error ){
@@ -41,7 +48,9 @@ const agregarProducto = async(req, res=response)=>{
 const listarProducto = async (req, res) =>{
     
     
-    const producto = await Producto.find({});
+    const producto = await Producto.find({})
+    .populate('categoria', 'nombre')
+    .populate('proveedor', 'nomCompania')
 
     res.json({
         ok: true,
@@ -55,17 +64,25 @@ const busquedaProducto = async (req, res=response)=>{
 
     const busqueda = req.params.busqueda; 
     const miRegExp = new RegExp(busqueda,'i'); //i  insensible
+    
 
-    const [productos] = await Promise.all ([
-        Producto.find({sku:miRegExp}), // la busqueda es por sku
+    const [productos, productoXnombre] = await Promise.all ([
+        Producto.find(
+            {
+                sku:miRegExp,
+            }),
+        Producto.find(
+            {
+            nombre:miRegExp,
+        }),
     ]);
-
-    res.json({
+   
+     res.json({
         ok: true,
         msg: 'busqueda Productos',
-        productos
+        productos,
+        productoXnombre
     });
-
 }
 
 //Actualizar Prodcuto
@@ -80,7 +97,7 @@ const actualizarProducto = async (req, res= response) =>{
                 msg: 'No existe un producto con ese id'
             });
         }
-        const {descripcion, precio, stock, disponibilidad,sku, ...campos} = req.body
+        const {sku, ...campos} = req.body
         
         if(productoDB.sku !== sku){
             const existeSku = await Producto.findOne({sku});
@@ -146,7 +163,7 @@ const eliminarProcuto = async (req, res=response) =>{
         console.log(error);
         res.status(500).json({
             ok:false,
-            msg: 'No es posible eliminar el Producto'
+            msg: 'No es posible eliminar el producto'
         });
     }
 }

@@ -25,6 +25,16 @@ const ProductoSchema = Schema({
         type: Number,
         default: 0
     },
+    categoria: {
+        type: Schema.Types.ObjectId,
+        ref: 'Categoria',
+        required: true
+    },
+    proveedor:{
+        type: Schema.Types.ObjectId,
+        ref: 'Proveedor',
+        required: true
+    },
     disponibilidad: {
         type: Boolean,
         default: true
